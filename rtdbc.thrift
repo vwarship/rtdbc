@@ -29,9 +29,8 @@ union Value
 
 struct Error
 {
-	1: required i32 commonError,
-	2: optional i32 nativeError,
-	3: optional string message,
+	1: required i64 commonError,
+	2: optional i64 nativeError,
 }
 
 struct DataSample
@@ -56,11 +55,13 @@ enum SamplingMode
 }
 
 exception IOError {
-  1: optional Error error,
+    1: required Error error,
+    2: optional string message,
 }
 
 exception IllegalArgument {
-  1: optional Error error,
+    1: required Error error,
+    2: optional string message,
 }
 
 service RTDBCService {
