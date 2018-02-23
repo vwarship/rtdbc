@@ -39,7 +39,7 @@ service RTDBCService {
         throws (1:InvalidRequestException ire),
         
     list<DataSample> read_interpolated_datas(1:required list<string> tagnames, 
-                                             2:required list<double> timestamps)
+                                             2:required double timestamp)
         throws (1:InvalidRequestException ire),
         
     list<DataSample> read_raw_datas(1:required string tagname, 
