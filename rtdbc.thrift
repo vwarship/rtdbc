@@ -1,73 +1,53 @@
-﻿namespace cpp rtdbc.thrift
-namespace java rtdbc.thrift
+﻿namespace cpp com.gouchicao.rtdbc.thrift
+namespace java com.gouchicao.rtdbc
+namespace csharp RTDBC
 namespace py rtdbc
 
-enum DataType
-{
-	DIGITAL = 0,
-	INTEGER,
-	DOUBLE,
-	STRING,
-	BLOB,
-}
-
-enum DataQuality
-{
-	GOOD = 0,       //好
+enum DataQuality {
+	GOOD,           //好
 	BAD,            //坏
 	UNCERTAIN,      //可疑
 	NA,             //未定义
+	ERROR_VALUE,    //错误值
 }
 
-union Value
-{
-	1: i64 Integer,
-	2: double Double,
-	3: string String,
-	4: binary Blob,
-}
-
-struct Error
-{
-	1: required i64 commonError,
-	2: optional i64 nativeError,
-}
-
-struct DataSample
-{
-	1: required string tagname,
-	2: required double timestamp,
-	3: required DataType type,
-	4: required Value value,
-	5: required DataQuality dataQuality,
-}
-
-struct DataRecord
-{
-	1: required DataSample dataSample,
-	2: required Error error,
-}
-
-enum SamplingMode
-{
-    INTERPOLATED = 0,
+enum SamplingMode {
+    INTERPOLATED = 1,
     TREND,
 }
 
-exception IOError {
-    1: required Error error,
-    2: optional string message,
+struct DataSample {
+	1: required string tagname,
+	2: required double timestamp,
+	4: required double value,
+	5: required DataQuality data_quality,
 }
 
-exception IllegalArgument {
-    1: required Error error,
-    2: optional string message,
+/** 非法请求，如：参数格式不正确或者不完整 */
+exception InvalidRequestException {
+    1: optional string why,
 }
 
 service RTDBCService {
-    list<DataRecord> readCurrentDatas(1:list<string> tagnames) throws (1:IOError io, 2:IllegalArgument ia),
-    list<DataRecord> readInterpolatedDatas(1:list<string> tagnames, 2:list<double> timestamps) throws (1:IOError io, 2:IllegalArgument ia),
-    list<DataSample> readRawDatas(1:string tagname, 2:double startTime, 3:double endTime) throws (1:IOError io, 2:IllegalArgument ia),
-    list<DataSample> readSampledDatas(1:string tagname, 2:double startTime, 3:double endTime, 4:SamplingMode mode, 5:i64 intervalMilliseconds) throws (1:IOError io, 2:IllegalArgument ia),
-    list<Error> writeDatas(1:list<DataSample> dataSamples) throws (1:IOError io, 2:IllegalArgument ia),
+    list<DataSample> read_current_datas(1:required list<string> tagnames)
+        throws (1:InvalidRequestException ire),
+        
+    list<DataSample> read_interpolated_datas(1:required list<string> tagnames, 
+                                             2:required list<double> timestamps)
+        throws (1:InvalidRequestException ire),
+        
+    list<DataSample> read_raw_datas(1:required string tagname, 
+                                    2:required double start_time, 
+                                    3:required double end_time)
+        throws (1:InvalidRequestException ire),
+        
+    list<DataSample> read_sampled_datas(1:required string tagname, 
+                                        2:required double start_time, 
+                                        3:required double end_time, 
+                                        4:required i64 number_of_samples, 
+                                        5:required SamplingMode mode=SamplingMode.INTERPOLATED)
+        throws (1:InvalidRequestException ire),
+    
+    list<DataQuality> write_datas(1:required list<DataSample> data_samples)
+        throws (1:InvalidRequestException ire),
 }
