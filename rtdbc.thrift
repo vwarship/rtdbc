@@ -3,6 +3,11 @@ namespace java com.gouchicao.rtdbc
 namespace csharp RTDBC
 namespace py rtdbc
 
+enum DataType {
+	INTEGER,
+	DOUBLE,
+}
+
 enum DataQuality {
 	GOOD,           //好
 	BAD,            //坏
@@ -19,7 +24,8 @@ enum SamplingMode {
 struct DataSample {
 	1: required string tagname,
 	2: required double timestamp,
-	4: required double value,
+	3: required double value,
+	4: required DataType type,
 	5: required DataQuality data_quality,
 }
 
