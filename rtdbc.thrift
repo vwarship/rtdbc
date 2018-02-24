@@ -23,7 +23,7 @@ struct DataSample {
 	2: required double timestamp,
 	3: required double value,
 	4: required DataType type,
-	5: required DataQuality data_quality,
+	5: required DataQuality quality,
 }
 
 /** 非法请求，如：参数格式不正确或者不完整 */
