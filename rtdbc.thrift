@@ -11,9 +11,6 @@ enum DataType {
 enum DataQuality {
 	GOOD,           //好
 	BAD,            //坏
-	UNCERTAIN,      //可疑
-	NA,             //未定义
-	ERROR_VALUE,    //错误值
 }
 
 enum SamplingMode {
